@@ -157,8 +157,12 @@ impl Contract {
                 if current_shared_storage.pool_id == pool_id {
                     // The account is already using shared storage from the same pool.
 
-                    if max_bytes <= current_shared_storage.max_bytes {
+                    if max_bytes < current_shared_storage.max_bytes {
                         env::panic_str("Max bytes must be greater than the current max bytes");
+                    }
+                    if max_bytes == current_shared_storage.max_bytes {
+                        // Nothing to do. The account has already allocated the same amount of bytes.
+                        return;
                     }
 
                     let new_shared_storage = AccountSharedStorage {
